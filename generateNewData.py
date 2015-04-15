@@ -1,19 +1,23 @@
 """
 #This file generates new interview/offers csvs with the following adjustments:
-	- organization field is replaced with using the map contained within the passed-in input file
+	1. organization field is replaced with using the map contained within the passed-in input file
 """
-import setup, csv
+import setup, csv, sys
 
 """Constants - CHANGE THESE IF NECSSARY"""
-INTPUTFILE = setup.DIR + "orgs.csv"
 OUTPUTINTERVIEWS = setup.DIR + 'Modified_Interviews.csv'
 OUTPUTOFFERS = setup.DIR + 'Modified_Offers.csv'
 
+if len(sys.argv) != 2:
+	print "Usage: Python generateNewData.py <organization csv file>"
+	sys.exit(-1)
+
+INPUTFILE = setup.DIR + sys.argv[1]
 db = setup.initialize()
 
 #Construct a hashmap to map original organizations to corrected organizations
 orgMap = {}
-reader = csv.DictReader(open(INTPUTFILE, 'Urb'), fieldnames = ['original', 'corrected'])
+reader = csv.DictReader(open(INPUTFILE, 'Urb'), fieldnames = ['original', 'corrected'])
 for entry in reader:
 	orgMap[entry['original']] = entry['corrected']
 print '***Constructed in-memory hashmap to re-write organization names'

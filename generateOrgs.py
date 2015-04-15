@@ -1,7 +1,7 @@
-#This file generates a csv containing all the distinct organization found in both tables sorted in alphabetical order (two identical columns are outputted).
+"""This file generates a csv containing all the distinct organization found in both tables sorted in alphabetical order (two identical columns are outputted)"""
 import setup, csv
 
-#Output file name
+"""Output file name"""
 OUTPUTFILE = setup.DIR + 'orgs.csv'
 
 db = setup.initialize()

@@ -1,7 +1,7 @@
-#This file setups a postgres database, loading the interviews/offers tables
+"""This file setups a postgres database, loading the interviews/offers tables"""
 import psycopg2
 
-#Constants - CHANGE THESE TO USE YOUR DIRECTORY STRUCTURE
+"""Constants - CHANGE THESE TO USE YOUR DIRECTORY STRUCTURE"""
 DIR = '/home/vagrant/Helping/' #Current directory
 INTERVIEWS = DIR + 'Kelly_Interviews.csv'
 OFFERS = DIR + 'Kelly_Offers2.csv'

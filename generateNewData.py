@@ -1,6 +1,7 @@
 """
 #This file generates new interview/offers csvs with the following adjustments:
 	1. organization field is replaced with using the map contained within the passed-in input file
+	2. "Mock" is eliminated
 """
 import setup, csv, sys
 

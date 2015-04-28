@@ -29,6 +29,7 @@ for originalRow in reader:
 	#Replace the organization from the original using the orgMap we generated earlier
 	newRow = originalRow.copy()
 	newRow['organization'] = orgMap[originalRow['organization']]
+	newRow['season'] = originalRow['season'][0:4] #Change season to be only the first four characters, which is the year
 	writer.writerow(newRow)
 print '***Wrote ' + OUTPUTINTERVIEWS + ' ***'
 
@@ -38,5 +39,6 @@ for originalRow in reader:
 	#Replace the organization from the original using the orgMap we generated earlier
 	newRow = originalRow.copy()
 	newRow['organization'] = orgMap[originalRow['organization']]
+	newRow['season'] = originalRow['season'][0:4] #Change season to be only the first four characters, which is the year
 	writer.writerow(newRow)
 print '***Wrote ' + OUTPUTOFFERS + ' ***'

@@ -6,22 +6,23 @@ CREATE table OFFERS (row integer, season integer, audited varchar(200), jobtypeo
 COPY OFFERS FROM '/home/vagrant/Helping/Modified_Offers.csv' DELIMITER ',' CSV;
 
 """
-Finds matches between interviews and offers on ucid, org, season, jobtype, with following fields:
-	season - e.g., 2001-2002
-	org - organization (e.g., Bank of America)
-	ititle - job title from interview File
-	otitle - job title from offers File
-	ifunction - job function from interview File
-	ofunction - job function from offers File
-	itype - interviewType (either Bid or Invite)
-	otype - offerType (one of five types)
-	idate - interview date
-	odate - offer date 
+Finds matches between interviews and offers on ucid, org, season, jobtype, date difference with following fields:
+TODO: we can specify field names
 """
-CREATE VIEW Matches(season, org, type, ucid, ititle, otitle, ifunction, ofunction, itype, otype, idate, odate) AS 
-SELECT A.season, A.organization, A.jobtype, A.ucid, A.jobtitle, B.jobtitle, A.function, B.jobfunction, A.interviewType, B.joboffersource, A.interviewDate, B.offerdate 
-FROM INTERVIEWS A INNER JOIN OFFERS B 
-ON A.ucid = B.ucid AND A.season = B.season AND A.jobtype = B.jobtypeoffer AND A.organization = B.organization;
+CREATE VIEW SameSeasonMatches(interviewNumber, offerNumber, season, ucid, organization, interviewDate, offerDate, interviewJobType, OfferJobType, 
+	InterviewJobTitle, OfferJobTitle, InterviewFunction, OfferFunction, interviewType, offerType, bidRestriction, city, state, country) AS 
+	(SELECT A.row, B.row, A.season, A.ucid, A.organization, A.interviewDate, B.offerDate, A.jobtype, B.jobtypeoffer, A.jobtitle, B.jobtitle, A.function, B.jobfunction, 
+		A.interviewType, B.joboffersource, B.city, B.state, B.country, 
+		CASE WHEN 
+			((A.interviewType = 'Bid' AND NOT B.joboffersource = 'Interview on campus - invite schedule') OR 
+			((A.interviewType = 'Invite' OR A.interviewType = 'Invited') AND NOT (B.joboffersource = 'Interview on campus - bid schedule' OR B.joboffersource = 'Interview on campus - open schedule')))
+		THEN
+			1
+		ELSE
+			0
+		END
+	FROM INTERVIEWS A INNER JOIN OFFERS B
+	ON A.ucid = B.ucid AND A.season = B.season AND A.organization = B.organization A.jobtype = B.jobtypeoffer AND B.offerDate >= A.interviewDate);
 
 
 """
@@ -44,8 +45,8 @@ CREATE VIEW Duplicates(ucid, org, season, type) AS
 """
 TODO: INSERT COMMENT HERE
 """
-CREATE TABLE MultiSeasonMatches(interviewNumber, offerNumber, season, ucid, organization, interviewDate, offerDate, interviewJobType, OfferJobType, 
-	InterviewJobTitle, OfferJobTitle, InterviewFunction, OfferFunction, interviewType, offerType, enforcesBidRestriction, city, state, country) AS 
+CREATE VIEW MultiSeasonMatches(interviewNumber, offerNumber, season, ucid, organization, interviewDate, offerDate, interviewJobType, OfferJobType, 
+	InterviewJobTitle, OfferJobTitle, InterviewFunction, OfferFunction, interviewType, offerType, bidRestriction, city, state, country) AS 
 	(SELECT A.row, B.row, A.season, A.ucid, A.organization, A.interviewDate, B.offerDate, A.jobtype, B.jobtypeoffer, A.jobtitle, B.jobtitle, A.function, B.jobfunction, 
 		A.interviewType, B.joboffersource, B.city, B.state, B.country, 
 		CASE WHEN 
@@ -58,4 +59,6 @@ CREATE TABLE MultiSeasonMatches(interviewNumber, offerNumber, season, ucid, orga
 		END
 	FROM INTERVIEWS A INNER JOIN OFFERS B
 	ON A.ucid = B.ucid AND (A.season + 1) = B.season AND A.organization = B.organization AND B.offerDate >= A.interviewDate);
+
+
 

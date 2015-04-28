@@ -22,8 +22,7 @@ CREATE VIEW SameSeasonMatches(interviewNumber, offerNumber, season, ucid, organi
 			0
 		END
 	FROM INTERVIEWS A INNER JOIN OFFERS B
-	ON A.ucid = B.ucid AND A.season = B.season AND A.organization = B.organization A.jobtype = B.jobtypeoffer AND B.offerDate >= A.interviewDate);
-
+	ON A.ucid = B.ucid AND A.season = B.season AND A.organization = B.organization AND A.jobtype = B.jobtypeoffer AND B.offerDate >= A.interviewDate);
 
 """
 Finds the rows from the offers table that are not matched on the Matches simple join with 4 fields
@@ -59,6 +58,3 @@ CREATE VIEW MultiSeasonMatches(interviewNumber, offerNumber, season, ucid, organ
 		END
 	FROM INTERVIEWS A INNER JOIN OFFERS B
 	ON A.ucid = B.ucid AND (A.season + 1) = B.season AND A.organization = B.organization AND B.offerDate >= A.interviewDate);
-
-
-
